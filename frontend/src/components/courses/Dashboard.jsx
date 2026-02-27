@@ -1,0 +1,116 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useAuth } from '../../context/AuthContext';
+import CourseForm from './CourseForm';
+import CourseCard from './CourseCard';
+import EditCourseModal from './EditCourseModal';
+import toast from 'react-hot-toast';
+import './Dashboard.css';
+
+const Dashboard = () => {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [editingCourse, setEditingCourse] = useState(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
+  const fetchCourses = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/courses');
+      setCourses(res.data.data);
+    } catch (err) {
+      toast.error('Failed to fetch courses');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createCourse = async (courseData) => {
+    try {
+      const res = await axios.post('http://localhost:5000/api/courses', courseData);
+      setCourses([res.data.data, ...courses]);
+      toast.success('Course created successfully!');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to create course');
+    }
+  };
+
+  const updateCourse = async (id, courseData) => {
+    try {
+      const res = await axios.put(`http://localhost:5000/api/courses/${id}`, courseData);
+      setCourses(courses.map(course => 
+        course._id === id ? res.data.data : course
+      ));
+      setEditingCourse(null);
+      toast.success('Course updated successfully!');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update course');
+    }
+  };
+
+  const deleteCourse = async (id) => {
+    if (window.confirm('Are you sure you want to delete this course?')) {
+      try {
+        await axios.delete(`http://localhost:5000/api/courses/${id}`);
+        setCourses(courses.filter(course => course._id !== id));
+        toast.success('Course deleted successfully!');
+      } catch (err) {
+        toast.error('Failed to delete course');
+      }
+    }
+  };
+
+  if (loading) {
+    return <div className="loading-spinner"></div>;
+  }
+
+  return (
+    <div className="dashboard">
+      <div className="dashboard-header">
+        <h1>Welcome, {user?.name}!</h1>
+        <p>Manage your courses</p>
+      </div>
+
+      <div className="dashboard-content">
+        <div className="create-course-section">
+          <h2>Create New Course</h2>
+          <CourseForm onSubmit={createCourse} />
+        </div>
+
+        <div className="courses-section">
+          <h2>Your Courses ({courses.length})</h2>
+          {courses.length === 0 ? (
+            <div className="no-courses">
+              <p>You haven't created any courses yet.</p>
+              <p>Use the form above to create your first course!</p>
+            </div>
+          ) : (
+            <div className="courses-grid">
+              {courses.map(course => (
+                <CourseCard
+                  key={course._id}
+                  course={course}
+                  onEdit={() => setEditingCourse(course)}
+                  onDelete={() => deleteCourse(course._id)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {editingCourse && (
+        <EditCourseModal
+          course={editingCourse}
+          onClose={() => setEditingCourse(null)}
+          onUpdate={updateCourse}
+        />
+      )}
+    </div>
+  );
+};
+
+export default Dashboard;
