@@ -1,14 +1,7 @@
-const express = require("express");
+const app = require('./src/app');
 
-const app = express();
+const PORT = process.env.PORT || 5000;
 
-app.get("/", (req, res) => {
-  res.send("Welcome to the Home Page!");
-});
-
-const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
-
-module.exports = app;
