@@ -11,7 +11,6 @@ import ProfilePage from './pages/ProfilePage';
 import CreateCoursePage from './pages/CreateCoursePage';
 import MyCoursesPage from './pages/MyCoursesPage';
 import { ROUTES } from './utils/constants';
-import './App.css';
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -23,7 +22,7 @@ function App() {
   });
 
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    document.documentElement.classList.toggle('dark', theme === 'dark');
     localStorage.setItem('theme', theme);
   }, [theme]);
 
@@ -43,7 +42,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="App">
+        <div className="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-indigo-50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900">
           <Navbar theme={theme} onToggleTheme={handleThemeToggle} />
           <Toaster 
             position="top-right"
@@ -66,7 +65,7 @@ function App() {
               },
             }}
           />
-          <div className="container">
+          <main className="mx-auto w-full max-w-7xl px-4 pb-10 pt-24 sm:px-6 lg:px-8">
             <Routes>
               <Route path={ROUTES.HOME} element={<HomePage />} />
               <Route path={ROUTES.LOGIN} element={<Login />} />
@@ -89,7 +88,7 @@ function App() {
               <Route path={ROUTES.DASHBOARD} element={<Navigate to={ROUTES.COURSES_MY} replace />} />
               <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
             </Routes>
-          </div>
+          </main>
         </div>
       </Router>
     </AuthProvider>

@@ -15,52 +15,44 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-    // Clear error for this field when user starts typing
-    if (errors[e.target.name]) {
-      setErrors({
-        ...errors,
-        [e.target.name]: ''
-      });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: '' }));
     }
   };
 
   const validateForm = () => {
-    const newErrors = {};
+    const nextErrors = {};
     if (!formData.name) {
-      newErrors.name = 'Name is required';
+      nextErrors.name = 'Name is required';
     } else if (formData.name.length < 2) {
-      newErrors.name = 'Name must be at least 2 characters';
+      nextErrors.name = 'Name must be at least 2 characters';
     }
 
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      nextErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      nextErrors.email = 'Email is invalid';
     }
 
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      nextErrors.password = 'Password is required';
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      nextErrors.password = 'Password must be at least 6 characters';
     }
 
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      nextErrors.confirmPassword = 'Passwords do not match';
     }
-
-    return newErrors;
+    return nextErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    const nextErrors = validateForm();
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
       return;
     }
 
@@ -72,65 +64,51 @@ const Register = () => {
   };
 
   return (
-    <div className="auth-container">
-      <h2>Create Account</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Enter your name"
-          />
-          {errors.name && <div className="error-message">{errors.name}</div>}
+    <div className="flex min-h-[70vh] items-center justify-center">
+      <div className="w-full max-w-md rounded-3xl bg-white p-6 shadow-soft dark:bg-slate-900 sm:p-8">
+        <div className="mb-6 text-center">
+          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white">Create account</h1>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            Start building your personal course library.
+          </p>
         </div>
 
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-          />
-          {errors.email && <div className="error-message">{errors.email}</div>}
-        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {[
+            ['name', 'Name', 'text', 'Enter your name'],
+            ['email', 'Email', 'email', 'Enter your email'],
+            ['password', 'Password', 'password', 'Enter your password'],
+            ['confirmPassword', 'Confirm Password', 'password', 'Confirm your password']
+          ].map(([name, label, type, placeholder]) => (
+            <div key={name}>
+              <label className="mb-1.5 block text-sm font-semibold text-slate-700 dark:text-slate-200">{label}</label>
+              <input
+                type={type}
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                placeholder={placeholder}
+                className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
+              />
+              {errors[name] ? <p className="mt-1 text-xs text-rose-500">{errors[name]}</p> : null}
+            </div>
+          ))}
 
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-          />
-          {errors.password && <div className="error-message">{errors.password}</div>}
-        </div>
+          <button
+            type="submit"
+            className="w-full rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          >
+            Register
+          </button>
+        </form>
 
-        <div className="form-group">
-          <label>Confirm Password</label>
-          <input
-            type="password"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            placeholder="Confirm your password"
-          />
-          {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}
-        </div>
-
-        <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-          Register
-        </button>
-      </form>
-
-      <p className="auth-link">
-        Already have an account? <Link to={ROUTES.LOGIN}>Login</Link>
-      </p>
+        <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-400">
+          Already have an account?{' '}
+          <Link to={ROUTES.LOGIN} className="font-semibold text-indigo-600 hover:text-indigo-700">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };
