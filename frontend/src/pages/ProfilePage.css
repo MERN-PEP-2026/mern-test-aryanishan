@@ -1,0 +1,83 @@
+.profile-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+}
+
+.profile-header,
+.stat-box,
+.recent-courses {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.profile-header {
+  padding: 1.6rem;
+}
+
+.profile-header h1 {
+  color: var(--text);
+  font-size: 1.9rem;
+}
+
+.profile-header p,
+.profile-header small {
+  color: var(--muted);
+}
+
+.profile-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+}
+
+.stat-box {
+  padding: 1.15rem;
+}
+
+.stat-box h3 {
+  font-size: 0.92rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+
+.stat-box p {
+  font-size: 1.65rem;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.recent-courses {
+  padding: 1.4rem;
+}
+
+.recent-courses h2 {
+  margin-bottom: 1rem;
+}
+
+.recent-courses ul {
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.recent-courses li {
+  border: 1px solid var(--border);
+  border-radius: 0.8rem;
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+
+.recent-courses strong {
+  color: var(--text);
+}
+
+.recent-courses span,
+.recent-courses small,
+.profile-empty {
+  color: var(--muted);
+}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { ROUTES } from '../../utils/constants';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -66,7 +67,7 @@ const Register = () => {
     const { confirmPassword, ...registerData } = formData;
     const result = await register(registerData);
     if (result.success) {
-      navigate('/dashboard');
+      navigate(ROUTES.COURSES_MY);
     }
   };
 
@@ -128,7 +129,7 @@ const Register = () => {
       </form>
 
       <p className="auth-link">
-        Already have an account? <Link to="/login">Login</Link>
+        Already have an account? <Link to={ROUTES.LOGIN}>Login</Link>
       </p>
     </div>
   );

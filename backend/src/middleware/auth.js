@@ -12,7 +12,16 @@ module.exports = function(req, res, next){
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded.user;
+    // Support current token shape ({ userId }) and older shapes ({ user }).
+    req.user = decoded.userId || decoded.user?.id || decoded.user;
+
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid token payload'
+      });
+    }
+
     next();
   } catch (err) {
     return res.status(401).json({

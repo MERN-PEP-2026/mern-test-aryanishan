@@ -1,0 +1,51 @@
+.course-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.course-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.course-form label {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.course-form input,
+.course-form textarea {
+  width: 100%;
+  padding: 0.76rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 0.72rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: var(--panel-2);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.course-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.course-form input:focus,
+.course-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  background: var(--panel);
+}
+
+.error-message {
+  font-size: 0.82rem;
+  color: var(--danger);
+}
+
+.btn.btn-primary {
+  align-self: flex-start;
+  min-width: 160px;
+}

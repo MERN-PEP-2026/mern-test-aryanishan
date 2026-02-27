@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import CourseForm from './CourseForm';
 import CourseCard from './CourseCard';
 import EditCourseModal from './EditCourseModal';
 import toast from 'react-hot-toast';
+import api from '../../services/api';
+import { TOAST_MESSAGES } from '../../utils/constants';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -19,7 +20,7 @@ const Dashboard = () => {
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/courses');
+      const res = await api.get('/courses');
       setCourses(res.data.data);
     } catch (err) {
       toast.error('Failed to fetch courses');
@@ -30,35 +31,35 @@ const Dashboard = () => {
 
   const createCourse = async (courseData) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/courses', courseData);
-      setCourses([res.data.data, ...courses]);
-      toast.success('Course created successfully!');
+      const res = await api.post('/courses', courseData);
+      setCourses((prevCourses) => [res.data.data, ...prevCourses]);
+      toast.success(TOAST_MESSAGES.COURSE_CREATED);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create course');
+      toast.error(err.response?.data?.message || TOAST_MESSAGES.COURSE_ERROR);
     }
   };
 
   const updateCourse = async (id, courseData) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/courses/${id}`, courseData);
-      setCourses(courses.map(course => 
-        course._id === id ? res.data.data : course
-      ));
+      const res = await api.put(`/courses/${id}`, courseData);
+      setCourses((prevCourses) =>
+        prevCourses.map((course) => (course._id === id ? res.data.data : course))
+      );
       setEditingCourse(null);
-      toast.success('Course updated successfully!');
+      toast.success(TOAST_MESSAGES.COURSE_UPDATED);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update course');
+      toast.error(err.response?.data?.message || TOAST_MESSAGES.COURSE_ERROR);
     }
   };
 
   const deleteCourse = async (id) => {
     if (window.confirm('Are you sure you want to delete this course?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/courses/${id}`);
-        setCourses(courses.filter(course => course._id !== id));
-        toast.success('Course deleted successfully!');
+        await api.delete(`/courses/${id}`);
+        setCourses((prevCourses) => prevCourses.filter((course) => course._id !== id));
+        toast.success(TOAST_MESSAGES.COURSE_DELETED);
       } catch (err) {
-        toast.error('Failed to delete course');
+        toast.error(err.response?.data?.message || TOAST_MESSAGES.COURSE_ERROR);
       }
     }
   };

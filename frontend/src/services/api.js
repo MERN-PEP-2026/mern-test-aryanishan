@@ -1,9 +1,8 @@
 import axios from 'axios';
-
-const API_URL = 'http://localhost:5000/api';
+import { API_BASE_URL, ROUTES } from '../utils/constants';
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -29,7 +28,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      window.location.href = ROUTES.LOGIN;
     }
     return Promise.reject(error);
   }

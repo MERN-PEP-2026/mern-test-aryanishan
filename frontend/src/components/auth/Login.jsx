@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { ROUTES } from '../../utils/constants';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -49,7 +50,7 @@ const Login = () => {
 
     const result = await login(formData);
     if (result.success) {
-      navigate('/dashboard');
+      navigate(ROUTES.COURSES_MY);
     }
   };
 
@@ -87,7 +88,7 @@ const Login = () => {
       </form>
 
       <p className="auth-link">
-        Don't have an account? <Link to="/register">Register</Link>
+        Don't have an account? <Link to={ROUTES.REGISTER}>Register</Link>
       </p>
     </div>
   );
